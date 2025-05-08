@@ -58,7 +58,7 @@ services:
       - n8n_postgres_storage:/var/lib/postgresql/data
 
   qdrant:
-    image: qdrant/qdrant:v1.2.0
+    image: qdrant/qdrant:v1.11.3
     restart: always
     volumes:
       - qdrant_storage:/qdrant/storage
