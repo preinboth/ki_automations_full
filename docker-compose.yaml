@@ -175,11 +175,20 @@ services:
       - "8081"
     labels:
       - traefik.enable=true
+      # HTTP Fallback (für Erkennung durch Coolify)
+      - traefik.http.routers.redis-commander-http.rule=Host(`${REDIS_UI_HOST}`)
+      - traefik.http.routers.redis-commander-http.entrypoints=web
+      - traefik.http.routers.redis-commander-http.middlewares=redirect-to-https
+
+      # HTTPS
       - traefik.http.routers.redis-commander.rule=Host(`${REDIS_UI_HOST}`)
       - traefik.http.routers.redis-commander.entrypoints=websecure
       - traefik.http.routers.redis-commander.tls=true
       - traefik.http.routers.redis-commander.tls.certresolver=le
       - traefik.http.services.redis-commander.loadbalancer.server.port=8081
+
+      # Middleware definieren, falls nicht global
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 volumes:
   n8n_storage:
   n8n_postgres_storage:
