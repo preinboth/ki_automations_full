@@ -63,16 +63,16 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
-  # adminer:
-  #   image: dockette/adminer:dg
-  #   container_name: adminer
-  #   depends_on:
-  #     - n8n_postgres
-  #   restart: unless-stopped
-  #   labels:
-  #     - traefik.enable=true
-  #     - traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)
-  #     - traefik.http.routers.adminer.entrypoints=web
+  adminer:
+    image: dockette/adminer:dg
+    container_name: adminer
+    depends_on:
+      - n8n_postgres
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)
+      - traefik.http.routers.adminer.entrypoints=web
 
   # mongo:
   #   image: mongo:7
