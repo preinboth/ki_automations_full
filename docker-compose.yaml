@@ -101,9 +101,43 @@ services:
     volumes:
       - basedata_db_data:/var/lib/postgresql/data
 
+
+  nocodb_db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${NOCODB_DB_USER}
+      - POSTGRES_PASSWORD=${NOCODB_DB_PASSWORD}
+      - POSTGRES_DB=${NOCODB_DB_NAME}
+    volumes:
+      - nocodb_db_data:/var/lib/postgresql/data
+
+  nocodb:
+    image: nocodb/nocodb:latest
+    restart: unless-stopped
+    depends_on:
+      - nocodb_db
+    environment:
+      # Verbindungs-URL zum eigenen Postgres-DB-Service
+      - NC_DB=postgres://${NOCODB_DB_USER}:${NOCODB_DB_PASSWORD}@nocodb_db:5432/${NOCODB_DB_NAME}
+      # (optional) Standard-Port intern ist 8080
+      - NC_PORT=8080
+    labels:
+      - traefik.enable=true
+      # HTTPS-Router unter deiner NOCODB_HOST-Domain
+      - traefik.http.routers.nocodb.rule=Host(`${NOCODB_HOST}`)
+      - traefik.http.routers.nocodb.entrypoints=websecure
+      - traefik.http.routers.nocodb.tls=true
+      - traefik.http.routers.nocodb.tls.certresolver=le
+      # interner Port von NocoDB
+      - traefik.http.services.nocodb.loadbalancer.server.port=8080
+
+
+
 volumes:
   n8n_storage:
   n8n_postgres_storage:
   qdrant_storage:
   mongo_data:
   basedata_db_data:
+  nocodb_db_data:
