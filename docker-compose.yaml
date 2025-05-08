@@ -114,6 +114,6 @@ services:
 volumes:
   n8n_storage:
   n8n_postgres_storage:
-  # basedata_db_data:
+  basedata_db_data:
   qdrant_storage:
-  # mongo_data:
+  mongo_data:
