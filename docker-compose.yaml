@@ -145,8 +145,21 @@ services:
       - traefik.http.routers.nocodb.tls=true
       - traefik.http.routers.nocodb.tls.certresolver=le
       - traefik.http.services.nocodb.loadbalancer.server.port=8080
-
-
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Passwortschutz (optional, aber empfohlen)
+    command:
+      - redis-server
+      - --requirepass
+      - "${REDIS_PASSWORD}"
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    # Persistente Daten
+    volumes:
+      - redis_data:/data
 
 volumes:
   n8n_storage:
@@ -155,3 +168,4 @@ volumes:
   mongo_data:
   basedata_db_data:
   nocodb_db_data:
+  redis_data:
