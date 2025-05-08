@@ -8,10 +8,10 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 
 ### Hauptkomponenten
 
-- **n8n**: Workflow-Automatisierungsplattform
-- **Qdrant**: Vektordatenbank für KI-Anwendungen
-- **MongoDB**: Dokumentenorientierte Datenbank
-- **PostgreSQL**: Relationale Datenbank für n8n und Basisdaten
+- **n8n**: Workflow-Automatisierungsplattform (Latest Version)
+- **Qdrant**: Vektordatenbank für KI-Anwendungen (v1.11.3)
+- **MongoDB**: Dokumentenorientierte Datenbank (Version 7)
+- **PostgreSQL**: Relationale Datenbank für n8n und Basisdaten (Version 15)
 - **Supabase Studio**: Web-basierte Datenbankverwaltung
 - **Adminer**: Datenbank-Management-Tool
 
@@ -78,6 +78,23 @@ Alle Daten werden in Coolify-gemanagten Docker-Volumes gespeichert:
 - Umgebungsvariablen für sensible Daten
 - Automatische SSL/TLS-Konfiguration durch Coolify
 - Traefik für sicheres Routing
+
+## Zusätzliche Funktionen
+
+### n8n Import (Optional)
+Das Projekt enthält eine auskommentierte Import-Funktion für n8n, die folgende Möglichkeiten bietet:
+- Import von Credentials
+- Import von Workflows
+
+Um diese Funktion zu nutzen, müssen Sie:
+1. Die entsprechenden Abschnitte in der docker-compose.yaml auskommentieren
+2. Die zu importierenden Daten im `./import` Verzeichnis platzieren
+
+## Systemkonfiguration
+
+- Zeitzone: Europe/Berlin
+- Automatischer Neustart für alle Container
+- Optimierte Container-Orchestrierung durch Coolify
 
 ## Coolify-spezifische Vorteile
 
