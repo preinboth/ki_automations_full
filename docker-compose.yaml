@@ -110,7 +110,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.supabase-studio.rule=Host(`${BASEDATA_SUPABASE_STUDIO_HOST}`)
-      - traefik.http.routers.supabase-studio.entrypoints=web
+      - traefik.http.routers.supabase-studio.entrypoints=websecure
+      - traefik.http.routers.supabase-studio.tls=true
+      - traefik.http.services.supabase-studio.loadbalancer.server.port=3000
+      # - traefik.http.routers.supabase-studio.entrypoints=web
 
 
 volumes:
