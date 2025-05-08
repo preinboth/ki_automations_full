@@ -145,6 +145,7 @@ services:
       - traefik.http.routers.nocodb.tls=true
       - traefik.http.routers.nocodb.tls.certresolver=le
       - traefik.http.services.nocodb.loadbalancer.server.port=8080
+
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -161,6 +162,22 @@ services:
     volumes:
       - redis_data:/data
 
+  redis_commander:
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      # Verbindungsdefinition zu deinem Redis-Container
+      - REDIS_HOSTS=local:redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.redis-commander.rule=Host(`${REDIS_UI_HOST}`)
+      - traefik.http.routers.redis-commander.entrypoints=websecure
+      - traefik.http.routers.redis-commander.tls=true
+      - traefik.http.routers.redis-commander.tls.certresolver=le
+      - traefik.http.services.redis-commander.loadbalancer.server.port=8081
 volumes:
   n8n_storage:
   n8n_postgres_storage:

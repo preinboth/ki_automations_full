@@ -15,6 +15,7 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 - **Qdrant**: Vektordatenbank für KI-Anwendungen (v1.11.3)
   - Persistente Datenspeicherung
   - API-Key Authentifizierung
+  - HTTP/HTTPS-Routing mit SSL/TLS
 - **MongoDB**: Dokumentenorientierte Datenbank (Version 7)
   - Root-Benutzer-Authentifizierung
   - TCP-Routing für sichere Verbindungen
@@ -27,6 +28,18 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 - **Adminer**: Datenbank-Management-Tool
   - Universeller Datenbankzugriff
   - SSL/TLS geschützt
+- **NocoDB**: Moderne Datenbank-UI (Latest Version)
+  - JWT-Authentifizierung
+  - PostgreSQL-Backend
+  - SSL/TLS geschützt
+- **Redis**: In-Memory-Datenbank (Version 7)
+  - Passwortschutz
+  - Persistente Datenspeicherung
+  - Alpine-basiertes Image
+- **Redis Commander**: Redis-UI (Latest Version)
+  - Passwortgeschützter Zugriff
+  - SSL/TLS geschützt
+  - Echtzeit-Monitoring
 
 ### Coolify-Integration
 
@@ -40,7 +53,8 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 - Traefik als Reverse Proxy (durch Coolify verwaltet)
 - Separate Hostnamen für alle Dienste
 - TCP-Routing für MongoDB
-- HTTP-Routing für Web-Dienste
+- HTTP/HTTPS-Routing für Web-Dienste
+- Automatische HTTP zu HTTPS Weiterleitung
 
 ## Voraussetzungen
 
@@ -84,6 +98,12 @@ Alle Dienste sind über Coolify verwaltete Domains erreichbar:
 - **MongoDB**: `mongodb://${MONGO_HOST}:27017`
   - Authentifizierung erforderlich
   - TCP-Verbindung
+- **NocoDB**: `https://${NOCODB_HOST}`
+  - JWT-Authentifizierung
+  - Moderne Datenbank-UI
+- **Redis Commander**: `https://${REDIS_UI_HOST}`
+  - Passwortgeschützter Zugriff
+  - Redis-Monitoring
 
 ## Datenpersistenz
 
@@ -94,6 +114,8 @@ Alle Daten werden in Coolify-gemanagten Docker-Volumes gespeichert:
 - `basedata_db_data`: Basisdatenbank
 - `qdrant_storage`: Vektordatenbank
 - `mongo_data`: MongoDB Daten
+- `nocodb_db_data`: NocoDB Datenbank
+- `redis_data`: Redis Daten
 
 ## Sicherheit
 
@@ -104,6 +126,8 @@ Alle Daten werden in Coolify-gemanagten Docker-Volumes gespeichert:
 - Traefik für sicheres Routing
 - MongoDB Root-Benutzer-Authentifizierung
 - Qdrant API-Key Authentifizierung
+- NocoDB JWT-Authentifizierung
+- Redis Passwortschutz
 
 ## Zusätzliche Funktionen
 
@@ -124,6 +148,7 @@ Um diese Funktion zu nutzen, müssen Sie:
 - Optimierte Container-Orchestrierung durch Coolify
 - Persistente Datenspeicherung in Docker Volumes
 - Automatische SSL/TLS-Konfiguration
+- HTTP zu HTTPS Weiterleitung
 
 ## Coolify-spezifische Vorteile
 
