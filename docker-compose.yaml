@@ -29,23 +29,23 @@ services:
       - traefik.http.routers.n8n.rule=Host(`${N8N_HOST}`)
       - traefik.http.routers.n8n.entrypoints=web
 
-  n8n-import:
-    image: n8nio/n8n:latest
-    restart: "no"
-    command: >
-      /bin/sh -c "n8n import:credentials --input=/data/credentials && n8n import:workflow --input=/data/workflows"
-    environment:
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=n8n_postgres
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
-      - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
-      - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
-    volumes:
-      - n8n_storage:/home/node/.n8n
-      - ./import:/data
-    depends_on:
-      - n8n_postgres
+  # n8n-import:
+  #   image: n8nio/n8n:latest
+  #   restart: "no"
+  #   command: >
+  #     /bin/sh -c "n8n import:credentials --input=/data/credentials && n8n import:workflow --input=/data/workflows"
+  #   environment:
+  #     - DB_TYPE=postgresdb
+  #     - DB_POSTGRESDB_HOST=n8n_postgres
+  #     - DB_POSTGRESDB_PORT=5432
+  #     - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
+  #     - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
+  #     - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
+  #   volumes:
+  #     - n8n_storage:/home/node/.n8n
+  #     - ./import:/data
+  #   depends_on:
+  #     - n8n_postgres
 
   n8n_postgres:
     image: postgres:15
@@ -63,16 +63,16 @@ services:
   #   volumes:
   #     - qdrant_storage:/qdrant/storage
 
-  adminer:
-    image: dockette/adminer:dg
-    container_name: adminer
-    depends_on:
-      - n8n_postgres
-    restart: unless-stopped
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)
-      - traefik.http.routers.adminer.entrypoints=web
+  # adminer:
+  #   image: dockette/adminer:dg
+  #   container_name: adminer
+  #   depends_on:
+  #     - n8n_postgres
+  #   restart: unless-stopped
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)
+  #     - traefik.http.routers.adminer.entrypoints=web
 
   # mongo:
   #   image: mongo:7
@@ -116,6 +116,6 @@ services:
 volumes:
   n8n_storage:
   n8n_postgres_storage:
-  basedata_db_data:
+  # basedata_db_data:
   # qdrant_storage:
   # mongo_data:
