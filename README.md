@@ -9,11 +9,24 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 ### Hauptkomponenten
 
 - **n8n**: Workflow-Automatisierungsplattform (Latest Version)
+  - Basic Authentication aktiviert
+  - PostgreSQL als Datenbank
+  - Qdrant-Integration für KI-Funktionen
 - **Qdrant**: Vektordatenbank für KI-Anwendungen (v1.11.3)
+  - Persistente Datenspeicherung
+  - API-Key Authentifizierung
 - **MongoDB**: Dokumentenorientierte Datenbank (Version 7)
+  - Root-Benutzer-Authentifizierung
+  - TCP-Routing für sichere Verbindungen
 - **PostgreSQL**: Relationale Datenbank für n8n und Basisdaten (Version 15)
+  - Separate Instanzen für n8n und Basisdaten
+  - Persistente Datenspeicherung
 - **Supabase Studio**: Web-basierte Datenbankverwaltung
+  - Verbunden mit Basisdatenbank
+  - SSL/TLS geschützt
 - **Adminer**: Datenbank-Management-Tool
+  - Universeller Datenbankzugriff
+  - SSL/TLS geschützt
 
 ### Coolify-Integration
 
@@ -34,6 +47,8 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 - Coolify-Installation
 - Docker und Docker Compose
 - Domain-Konfiguration in Coolify für die verschiedenen Dienste
+- Ausreichend Speicherplatz für Docker Volumes
+- Netzwerk-Zugriff für alle konfigurierten Domains
 
 ## Installation in Coolify
 
@@ -49,6 +64,7 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
    - Setzen Sie die Umgebungsvariablen
    - Konfigurieren Sie die Domains für jeden Dienst
    - Aktivieren Sie SSL/TLS für alle Dienste
+   - Stellen Sie sicher, dass alle erforderlichen Ports verfügbar sind
 
 5. Deployen Sie das Projekt in Coolify
 
@@ -57,9 +73,17 @@ Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Dep
 Alle Dienste sind über Coolify verwaltete Domains erreichbar:
 
 - **n8n**: `https://${N8N_HOST}`
+  - Basic Authentication erforderlich
+  - Workflow-Editor und Automatisierung
 - **Adminer**: `https://${ADMINER_HOST}`
+  - Datenbank-Management
+  - Unterstützt alle Datenbanken
 - **Supabase Studio**: `https://${BASEDATA_SUPABASE_STUDIO_HOST}`
+  - Basisdatenbank-Verwaltung
+  - SQL-Editor und Tabellenverwaltung
 - **MongoDB**: `mongodb://${MONGO_HOST}:27017`
+  - Authentifizierung erforderlich
+  - TCP-Verbindung
 
 ## Datenpersistenz
 
@@ -78,6 +102,8 @@ Alle Daten werden in Coolify-gemanagten Docker-Volumes gespeichert:
 - Umgebungsvariablen für sensible Daten
 - Automatische SSL/TLS-Konfiguration durch Coolify
 - Traefik für sicheres Routing
+- MongoDB Root-Benutzer-Authentifizierung
+- Qdrant API-Key Authentifizierung
 
 ## Zusätzliche Funktionen
 
@@ -89,12 +115,15 @@ Das Projekt enthält eine auskommentierte Import-Funktion für n8n, die folgende
 Um diese Funktion zu nutzen, müssen Sie:
 1. Die entsprechenden Abschnitte in der docker-compose.yaml auskommentieren
 2. Die zu importierenden Daten im `./import` Verzeichnis platzieren
+3. Sicherstellen, dass die Daten im korrekten Format vorliegen
 
 ## Systemkonfiguration
 
 - Zeitzone: Europe/Berlin
 - Automatischer Neustart für alle Container
 - Optimierte Container-Orchestrierung durch Coolify
+- Persistente Datenspeicherung in Docker Volumes
+- Automatische SSL/TLS-Konfiguration
 
 ## Coolify-spezifische Vorteile
 
@@ -103,6 +132,8 @@ Um diese Funktion zu nutzen, müssen Sie:
 - Integrierte Monitoring-Funktionen
 - Automatische SSL/TLS-Verwaltung
 - Einfache Skalierung der Dienste
+- Zentralisierte Log-Verwaltung
+- Automatische Backup-Möglichkeiten
 
 ## Lizenz
 
