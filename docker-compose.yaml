@@ -17,7 +17,7 @@ services:
       - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
       - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
-      - QDRANT_URL=https://qdrant.pr-homelab.org:6333
+      - QDRANT_URL=https://${QDRANT_HOST}:6333
       - QDRANT_API_KEY=${QDRANT_API_KEY}
     volumes:
       - n8n_storage:/home/node/.n8n
@@ -62,6 +62,21 @@ services:
     restart: always
     volumes:
       - qdrant_storage:/qdrant/storage
+    labels:
+      - traefik.enable=true
+      # HTTP → HTTPS Redirect (optional, wenn du auch Port 80 nutzen willst)
+      - traefik.http.routers.qdrant-http.rule=Host(`${QDRANT_HOST}`)
+      - traefik.http.routers.qdrant-http.entrypoints=web
+      - traefik.http.routers.qdrant-http.middlewares=redirect-to-https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+
+      # HTTPS
+      - traefik.http.routers.qdrant.rule=Host(`${QDRANT_HOST}`)
+      - traefik.http.routers.qdrant.entrypoints=websecure
+      - traefik.http.routers.qdrant.tls=true
+      - traefik.http.routers.qdrant.tls.certresolver=le
+      # interner Port, auf dem Qdrant lauscht
+      - traefik.http.services.qdrant.loadbalancer.server.port=6333
 
   adminer:
     image: dockette/adminer:dg
