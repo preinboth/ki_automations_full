@@ -133,7 +133,7 @@ services:
       - nocodb_db
     environment:
       - NC_DB=pg
-      - NC_DB_HOST=${NOCODB_HOST}
+      - NC_DB_HOST=nocodb_db
       - NC_DB_PORT=5432
       - NC_DB_USER=${NOCODB_DB_USER}
       - NC_DB_PASSWORD=${NOCODB_DB_PASSWORD}
