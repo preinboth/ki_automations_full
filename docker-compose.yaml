@@ -132,11 +132,13 @@ services:
     depends_on:
       - nocodb_db
     environment:
-      # Korrektes Format für NC_DB:
-      - NC_DB=pg://nocodb_db:5432?u=${NOCODB_DB_USER}&p=${NOCODB_DB_PASSWORD}&d=${NOCODB_DB_NAME}
-      # Port, auf dem NocoDB intern lauscht
+      - NC_DB=pg
+      - NC_DB_HOST=nocodb_db
+      - NC_DB_PORT=5432
+      - NC_DB_USER=${NOCODB_DB_USER}
+      - NC_DB_PASSWORD=${NOCODB_DB_PASSWORD}
+      - NC_DB_NAME=${NOCODB_DB_NAME}
       - NC_PORT=8080
-      # (empfohlen) JWT-Secret für Authentifizierung
       - NC_AUTH_JWT_SECRET=${NOCODB_JWT_SECRET}
     labels:
       - traefik.enable=true
@@ -197,4 +199,3 @@ volumes:
   basedata_db_data:
   nocodb_db_data:
   redis_data:
-
