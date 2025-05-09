@@ -135,11 +135,11 @@ services:
       - NC_DB=pg
       - NC_DB_HOST=nocodb_db
       - NC_DB_PORT=5432
-      - NC_DB_USER=nocodb_user
-      - NC_DB_PASSWORD=d#2%v=%YS3X5ChCaZV
-      - NC_DB_NAME=nocodb
+      - NC_DB_USER=${NOCODB_DB_USER}
+      - NC_DB_PASSWORD=${NOCODB_DB_PASSWORD}
+      - NC_DB_NAME=${NOCODB_DB_NAME}
       - NC_PORT=8080
-      - NC_AUTH_JWT_SECRET=kBTOkBYkyCrFbIAqJNlRR8QQOrMwXiAxdt2LYY29PuL5ImKJZHUGd581sfx8Qy1c
+      - NC_AUTH_JWT_SECRET=${NOCODB_JWT_SECRET}
     labels:
       - traefik.enable=true
       - traefik.http.routers.nocodb.rule=Host(`${NOCODB_HOST}`)
