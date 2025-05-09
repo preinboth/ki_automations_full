@@ -1,35 +1,32 @@
-version: '3.9'
-services:
-  nocodb_db:
-    image: postgres:15
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${NOCODB_DB_USER}
-      - POSTGRES_PASSWORD=${NOCODB_DB_PASSWORD}
-      - POSTGRES_DB=${NOCODB_DB_NAME}
-    volumes:
-      - nocodb_db_data:/var/lib/postgresql/data
+version: '3.8'
 
+services:
   nocodb:
     image: nocodb/nocodb:latest
-    restart: unless-stopped
-    depends_on:
-      - nocodb_db
+    restart: always
     environment:
-      - NC_DB=pg
-      - NC_DB_HOST=nocodb_db
-      - NC_DB_PORT=5432
-      - NC_DB_USER=${NOCODB_DB_USER}
-      - NC_DB_PASSWORD=${NOCODB_DB_PASSWORD}
-      - NC_DB_NAME=${NOCODB_DB_NAME}
-      - NC_PORT=8080
-      - NC_AUTH_JWT_SECRET=${NOCODB_JWT_SECRET}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.nocodb.rule=Host(`${NOCODB_HOST}`)
-      - traefik.http.routers.nocodb.entrypoints=websecure
-      - traefik.http.routers.nocodb.tls=true
-      - traefik.http.routers.nocodb.tls.certresolver=le
-      - traefik.http.services.nocodb.loadbalancer.server.port=8080
+      NC_DB: "pg://${NOCODB_DB_USER}:${NOCODB_DB_PASSWORD}@root_db:5432/${NOCODB_DB_NAME}"
+    depends_on:
+      root_db:
+        condition: service_healthy
+    volumes:
+      - nocodb_data:/usr/app/data
+
+  root_db:
+    image: postgres:16.6
+    restart: always
+    environment:
+      POSTGRES_DB: ${NOCODB_DB_NAME}
+      POSTGRES_USER: ${NOCODB_DB_USER}
+      POSTGRES_PASSWORD: ${NOCODB_DB_PASSWORD}
+    volumes:
+      - nocodb_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${NOCODB_DB_USER}", "-d", "${NOCODB_DB_NAME}"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
 volumes:
   nocodb_db_data:
+  nocodb_data:
