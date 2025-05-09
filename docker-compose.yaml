@@ -132,9 +132,14 @@ services:
     depends_on:
       - nocodb_db
     environment:
-    - NC_DB=pg://${NOCODB_DB_USER}:${NOCODB_DB_PASSWORD}@nocodb_db:5432/${NOCODB_DB_NAME}
-    - NC_PORT=8080
-    - NC_AUTH_JWT_SECRET=${NOCODB_JWT_SECRET}
+      - NC_DB=pg
+      - NC_DB_HOST=nocodb_db
+      - NC_DB_PORT=5432
+      - NC_DB_USER=${NOCODB_DB_USER}
+      - NC_DB_PASSWORD=${NOCODB_DB_PASSWORD}
+      - NC_DB_NAME=${NOCODB_DB_NAME}
+      - NC_PORT=8080
+      - NC_AUTH_JWT_SECRET=${NOCODB_JWT_SECRET}
     labels:
       - traefik.enable=true
       - traefik.http.routers.nocodb.rule=Host(`${NOCODB_HOST}`)
@@ -142,6 +147,7 @@ services:
       - traefik.http.routers.nocodb.tls=true
       - traefik.http.routers.nocodb.tls.certresolver=le
       - traefik.http.services.nocodb.loadbalancer.server.port=8080
+
 
 
   redis:
