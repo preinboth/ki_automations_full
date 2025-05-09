@@ -132,7 +132,7 @@ services:
     depends_on:
       - nocodb_db
     environment:
-      - NC_DB=pg
+      - NC_DB=pg://${NOCODB_DB_USER}:${NOCODB_DB_PASSWORD}@nocodb_db:5432/${NOCODB_DB_NAME}
       - NC_DB_HOST=nocodb_db
       - NC_DB_PORT=5432
       - NC_DB_USER=${NOCODB_DB_USER}
