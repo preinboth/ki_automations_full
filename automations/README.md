@@ -2,7 +2,7 @@
 
 Eine umfassende Docker-basierte Automatisierungsplattform, speziell für die Deployment-Plattform Coolify optimiert. Das Projekt integriert n8n, verschiedene Datenbanken und KI-Komponenten in einer Coolify-kompatiblen Umgebung.
 
-![n8n.io - Screenshot](assets/n8n-demo.gif)
+![n8n.io - Screenshot](../assets/n8n-demo.gif)
 
 ## Komponenten
 
