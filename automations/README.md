@@ -132,11 +132,14 @@ Alle Daten werden in Coolify-gemanagten Docker-Volumes gespeichert:
 ## Zusätzliche Funktionen
 
 ### n8n Import (Optional)
+
 Das Projekt enthält eine auskommentierte Import-Funktion für n8n, die folgende Möglichkeiten bietet:
+
 - Import von Credentials
 - Import von Workflows
 
 Um diese Funktion zu nutzen, müssen Sie:
+
 1. Die entsprechenden Abschnitte in der docker-compose.yaml auskommentieren
 2. Die zu importierenden Daten im `./import` Verzeichnis platzieren
 3. Sicherstellen, dass die Daten im korrekten Format vorliegen
