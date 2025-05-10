@@ -27,8 +27,7 @@ services:
     depends_on:
       n8n_postgres:
         condition: service_healthy
-      qdrant:
-        condition: service_healthy
+
     healthcheck:
       test:
         - CMD-SHELL
@@ -61,13 +60,6 @@ services:
     restart: always
     volumes:
       - qdrant_storage:/qdrant/storage
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - 'curl -sSf http://127.0.0.1:6333/health | grep ok'
-      interval: 5s
-      timeout: 10s
-      retries: 5
     labels:
       - traefik.enable=true
       # HTTP → HTTPS Redirect (optional, wenn du auch Port 80 nutzen willst)
