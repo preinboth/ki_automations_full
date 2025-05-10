@@ -5,10 +5,15 @@ services:
     image: n8nio/n8n:latest
     restart: always
     environment:
+      # Zeitzone
       - GENERIC_TIMEZONE=Europe/Berlin
+
+      # Basic Auth
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
+
+      # DB
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}
       - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED:-true}
       - DB_TYPE=postgresdb
@@ -17,8 +22,17 @@ services:
       - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
       - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
+
+      # Qdrant
       - QDRANT_URL=https://${QDRANT_HOST}:6333
       - QDRANT_API_KEY=${QDRANT_API_KEY}
+
+      # HTTPS‑Webhook für Telegram
+      - N8N_PROTOCOL=https
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=443
+      - WEBHOOK_URL=https://${N8N_HOST}/
+
     volumes:
       - n8n_storage:/home/node/.n8n
     depends_on:
@@ -26,8 +40,21 @@ services:
       - qdrant
     labels:
       - traefik.enable=true
-      - traefik.http.routers.n8n.rule=Host(`${N8N_HOST}`)
-      - traefik.http.routers.n8n.entrypoints=web
+
+      # HTTP → HTTPS Redirect
+      - "traefik.http.routers.n8n-http.rule=Host(`${N8N_HOST}`)"
+      - "traefik.http.routers.n8n-http.entrypoints=web"
+      - "traefik.http.routers.n8n-http.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+
+      # HTTPS‑Router
+      - "traefik.http.routers.n8n.rule=Host(`${N8N_HOST}`)"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.routers.n8n.tls=true"
+
+      # Service‑Port in Container (n8n hört intern auf 5678)
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
 
   # n8n-import:
   #   image: n8nio/n8n:latest
@@ -115,10 +142,6 @@ services:
     # kein Port‑Mapping nötig, die DB läuft nur im internen Netzwerk
     volumes:
       - basedata_db_data:/var/lib/postgresql/data
-
-
-
-
 
   redis:
     image: redis:7-alpine
