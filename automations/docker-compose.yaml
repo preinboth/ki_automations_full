@@ -79,8 +79,6 @@ services:
   adminer:
     image: dockette/adminer:dg
     container_name: adminer
-    depends_on:
-      - n8n_postgres
     restart: unless-stopped
     labels:
       - traefik.enable=true
