@@ -1,33 +1,36 @@
 version: '3.8'
 
 services:
+  noco_db:
+    image: postgres:16.6
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: "${NC_POSTGRES_DB}"
+      POSTGRES_USER: "${NC_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${NC_POSTGRES_PASSWORD}"
+    volumes:
+      - nc_db:/var/lib/postgresql/data
+    labels:
+      - "coolify.managed=true"
+      - "coolify.applicationId=${{coolify.applicationId}}"
+      - "coolify.type=application"
+
   nocodb:
     image: nocodb/nocodb:latest
-    restart: always
-    environment:
-      NC_DB: "pg://${NOCODB_DB_USER}:${NOCODB_DB_PASSWORD}@root_db:5432/${NOCODB_DB_NAME}"
     depends_on:
-      root_db:
-        condition: service_healthy
-    volumes:
-      - nocodb_data:/usr/app/data
-
-  root_db:
-    image: postgres:16.6
-    restart: always
+      - noco_db
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: ${NOCODB_DB_NAME}
-      POSTGRES_USER: ${NOCODB_DB_USER}
-      POSTGRES_PASSWORD: ${NOCODB_DB_PASSWORD}
+      NC_DB: "${NC_DB_URL}"
     volumes:
-      - nocodb_db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "exit 0"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+      - nc_data:/usr/app/data
+    labels:
+      - "coolify.managed=true"
+      - "coolify.applicationId=${{coolify.applicationId}}"
+      - "coolify.type=application"
 
 volumes:
-  nocodb_db_data:
-  nocodb_data:
+  nc_db:
+  nc_data:
