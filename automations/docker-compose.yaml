@@ -100,17 +100,17 @@ services:
       - traefik.tcp.routers.mongo.entrypoints=mongo
       - traefik.tcp.services.mongo.loadbalancer.server.port=27017
 
-  basedata_db:
-    image: postgres:15
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${BASEDATA_USER}
-      - POSTGRES_PASSWORD=${BASEDATA_PASSWORD}
-      # Nutzt in der .env am besten: BASEDATA_DB=basedata
-      - POSTGRES_DB=${BASEDATA_DB:-basedata}
-    # kein Port‑Mapping nötig, die DB läuft nur im internen Netzwerk
-    volumes:
-      - basedata_db_data:/var/lib/postgresql/data
+  # basedata_db:
+  #   image: postgres:15
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_USER=${BASEDATA_USER}
+  #     - POSTGRES_PASSWORD=${BASEDATA_PASSWORD}
+  #     # Nutzt in der .env am besten: BASEDATA_DB=basedata
+  #     - POSTGRES_DB=${BASEDATA_DB:-basedata}
+  #   # kein Port‑Mapping nötig, die DB läuft nur im internen Netzwerk
+  #   volumes:
+  #     - basedata_db_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
@@ -156,10 +156,10 @@ services:
       # Middleware definieren, falls nicht global
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 volumes:
-  n8n_storage:
-  n8n_db_storage:
+  # n8n_storage:
+  # n8n_db_storage:
   qdrant_storage:
   mongo_data:
-  basedata_db_data:
+  # basedata_db_data:
   nocodb_db_data:
   redis_data:
