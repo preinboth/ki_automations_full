@@ -1,88 +1,52 @@
 version: '3.9'
 services:
 
+
   n8n:
-    image: n8nio/n8n:latest
-    restart: always
+    image: docker.n8n.io/n8nio/n8n
     environment:
-      # Zeitzone
-      - GENERIC_TIMEZONE=Europe/Berlin
-
-      # Basic Auth
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
-
-      # DB
-      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}
-      - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED:-true}
+      - SERVICE_FQDN_N8N_5678
+      - 'N8N_EDITOR_BASE_URL=${SERVICE_FQDN_N8N}'
+      - 'WEBHOOK_URL=${SERVICE_FQDN_N8N}'
+      - 'N8N_HOST=${SERVICE_URL_N8N}'
+      - 'GENERIC_TIMEZONE=${GENERIC_TIMEZONE:-Europe/Berlin}'
+      - 'TZ=${TZ:-Europe/Berlin}'
       - DB_TYPE=postgresdb
+      - 'DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}'
       - DB_POSTGRESDB_HOST=n8n_postgres
       - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
-      - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
-      - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
-
-      # Qdrant
-      - QDRANT_URL=https://${QDRANT_HOST}:6333
-      - QDRANT_API_KEY=${QDRANT_API_KEY}
-
-      # HTTPS‑Webhook für Telegram
-      - N8N_PROTOCOL=https
-      - N8N_HOST=${N8N_HOST}
-      - N8N_PORT=443
-      - WEBHOOK_URL=https://${N8N_HOST}/
-
+      - DB_POSTGRESDB_USER=$SERVICE_USER_POSTGRES
+      - DB_POSTGRESDB_SCHEMA=public
+      - DB_POSTGRESDB_PASSWORD=$SERVICE_PASSWORD_POSTGRES
     volumes:
-      - n8n_storage:/home/node/.n8n
+      - 'n8n_storage:/home/node/.n8n'
     depends_on:
-      - n8n_postgres
-      - qdrant
-    labels:
-      - traefik.enable=true
-
-      # HTTP → HTTPS Redirect
-      - "traefik.http.routers.n8n-http.rule=Host(`${N8N_HOST}`)"
-      - "traefik.http.routers.n8n-http.entrypoints=web"
-      - "traefik.http.routers.n8n-http.middlewares=redirect-to-https@docker"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-
-
-      # HTTPS‑Router
-      - "traefik.http.routers.n8n.rule=Host(`${N8N_HOST}`)"
-      - "traefik.http.routers.n8n.entrypoints=websecure"
-      - "traefik.http.routers.n8n.tls=true"
-
-      # Service‑Port in Container (n8n hört intern auf 5678)
-      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
-
-  # n8n-import:
-  #   image: n8nio/n8n:latest
-  #   restart: "no"
-  #   command: >
-  #     /bin/sh -c "n8n import:credentials --input=/data/credentials && n8n import:workflow --input=/data/workflows"
-  #   environment:
-  #     - DB_TYPE=postgresdb
-  #     - DB_POSTGRESDB_HOST=n8n_postgres
-  #     - DB_POSTGRESDB_PORT=5432
-  #     - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB}
-  #     - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER}
-  #     - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD}
-  #   volumes:
-  #     - n8n_storage:/home/node/.n8n
-  #     - ./import:/data
-  #   depends_on:
-  #     - n8n_postgres
-
+      n8n_postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'wget -qO- http://127.0.0.1:5678/'
+      interval: 5s
+      timeout: 20s
+      retries: 10
   n8n_postgres:
-    image: postgres:15
-    restart: always
-    environment:
-      - POSTGRES_USER=${N8N_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${N8N_POSTGRES_PASSWORD}
-      - POSTGRES_DB=${N8N_POSTGRES_DB}
+    image: 'postgres:16-alpine'
     volumes:
-      - n8n_postgres_storage:/var/lib/postgresql/data
+      - 'n8n_db_storage:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=$SERVICE_USER_POSTGRES
+      - POSTGRES_PASSWORD=$SERVICE_PASSWORD_POSTGRES
+      - 'POSTGRES_DB=${POSTGRES_DB:-n8n}'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'
+      interval: 5s
+      timeout: 20s
+      retries: 10
+
+
 
   qdrant:
     image: qdrant/qdrant:v1.11.3
@@ -188,7 +152,7 @@ services:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 volumes:
   n8n_storage:
-  n8n_postgres_storage:
+  n8n_db_storage:
   qdrant_storage:
   mongo_data:
   basedata_db_data:
