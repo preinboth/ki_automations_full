@@ -31,7 +31,7 @@ services:
       - NC_AUTH_JWT_SECRET=${NC_AUTH_JWT_SECRET}
       - PORT=${PORT}
     ports:
-      - "9280:8080"
+      - "9280:8080"   # optional, für direkten Hostzugriff
     volumes:
       - nc_data:/usr/app/data
 
