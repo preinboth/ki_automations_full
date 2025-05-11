@@ -28,6 +28,8 @@ services:
       - .env
     environment:
       - NC_DB=${NC_DB}
+      - NC_AUTH_JWT_SECRET=${NC_AUTH_JWT_SECRET}
+      - PORT=${PORT}
     ports:
       - "9280:8080"
     volumes:
